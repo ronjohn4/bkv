@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Audit View</h2>
+
+<table>
+    <tr>
+        <td align="right" style="font-weight:bold">Date/Time:</td>
+        <td>{{audit.a_datetime.strftime('%Y-%m-%d %H:%M:%S')}}</td>
+    </tr>
+    <tr>
+        <td align="right" style="font-weight:bold">User:</td>
+        <td>{{audit.a_user_id}} - {{audit.a_username}}</td>
+    </tr>
+    <tr>
+        <td align="right" style="font-weight:bold">Action:</td>
+        <td>{{audit.action}}</td>
+    </tr>
+    <tr>
+        <table>
+                <tr>
+                    <td style="font-weight:bold">Before</td>
+                    <td style="font-weight:bold">After</td>
+                </tr>
+                <tr>
+                    <td>{{audit.before}}</td>
+                    <td>{{audit.after}}</td>
+                </tr>
+        </table>
+    </tr>
+</table>
+<hr>
+<a href="{{rtn}}">back</a>
+{% endblock %}

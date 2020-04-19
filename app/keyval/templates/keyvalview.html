@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>KeyVal View</h2>
+
+<table>
+    <tr>
+        <td align="right" style="font-weight:bold">name:</td>
+        <td>{{keyval.name}}</td>
+    </tr>
+    <tr>
+        <td align="right" style="font-weight:bold">Email:</td>
+        <td>{{keyval.email}}</td>
+    </tr>
+    <tr>
+        <td align="right" style="font-weight:bold">sex:</td>
+        <td>{{sex[keyval.sex]}}</td>
+    </tr>
+    <tr>
+        <td align="right" style="font-weight:bold">DOB:</td>
+        <td>{{keyval.dob.strftime('%m-%d-%Y')}}</td>
+    </tr>
+    <tr>
+        <td align="right" style="font-weight:bold">active:</td>
+        <td>{{keyval.is_active}}</td>
+    </tr>
+    <tr>
+        <td align="right" style="font-weight:bold">Income Amount:</td>
+        <td>{{"${:,.2f}".format(keyval.income_amount|float)}}</td>
+    </tr>
+</table>
+<hr>
+<a href="{{ url_for('keyval.keyvallist') }}">back</a> | <a href="{{ url_for('keyval.keyvaledit', id=keyval.id) }}">edit</a>
+{% if auditlist %}
+ | <span title="only available if no related data">delete</span>
+{% else %}
+ | <a href="{{ url_for('keyval.keyvaldelete', id=keyval.id) }}">delete</a>
+{% endif %}
+<hr>
+<h2>Audit List</h2>
+{% if auditlist %}
+    <table>
+        <thead>
+            <td></td>
+            <td class="underline">Date/Time</td>
+            <td class="underline">User</td>
+            <td class="underline">Action</td>
+            <td class="underline">Before</td>
+            <td class="underline">After</td>
+        </thead>
+        {% for audit in auditlist %}
+            <tr>
+                <td><a href="{{ url_for('audit.auditview', id=audit.id) }}">view</a></td>
+                <td>{{audit.a_datetime.strftime('%Y-%m-%d %H:%M:%S')}}</td>
+                <td>{{audit.a_user}}</td>
+                <td>{{audit.action}}</td>
+                <td>{{audit.before|truncate(40)}}</td>
+                <td>{{audit.after|truncate(40)}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <hr>
+    <p>
+        {% if prev_url %}
+            <a href="{{ prev_url }}">prev</a>
+        {% else %}
+            prev
+        {% endif %}
+        |
+        {% if next_url %}
+            <a href="{{ next_url }}">next</a>
+        {% else %}
+            next
+        {% endif %}
+    </p>
+{% else %}
+    No Audit for this Parent
+{% endif %}
+{% endblock %}

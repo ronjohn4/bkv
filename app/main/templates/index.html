@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Application Configuration</h2>
+
+<p>
+    Application Configuration allows application administrators direct access to the key/value pairs that control how applications operate.
+</p>
+<p>
+    <a href="{{ url_for('keyval.keyvallist') }}">Instance</a> is the table that stores the Key Value pairs that are read ad used by applications.  KeyVals are defined for each App/Env combination.
+</p>
+<p>
+    <a href="{{ url_for('env.envlist') }}">Key</a> is short for Environments.  Our current environments are PRD, UAT1, UAT2, UAT3 and STG.
+</p>
+<p>
+    <a href="{{ url_for('bag.list') }}">Bags</a>  Each Key/Instance is grouped in a single bag.
+</p>
+{% endblock %}

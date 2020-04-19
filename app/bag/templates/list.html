@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Bag List</h2>
+
+<table>
+    <thead>
+        <td></td>
+        <td class="underline">Name</td>
+        <td class="underline">Active</td>
+        <td class="underline">Desc</td>
+    </thead>
+    {% for datasingle in datalist %}
+    <tr>
+        <td><a href="{{ url_for('.view', id=datasingle.id) }}">view</a></td>
+        <td>{{datasingle.name}}</td>
+        <td>{{datasingle.is_active}}</td>
+        <td>{{datasingle.desc}}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+<hr>
+<p>
+    {% if prev_url %}
+        <a href="{{ prev_url }}">prev</a>
+    {% else %}
+        prev
+    {% endif %}
+    |
+    {% if next_url %}
+        <a href="{{ next_url }}">next</a>
+    {% else %}
+        next
+    {% endif %}
+</p>
+<p>
+    <a href="{{ url_for('bag.add') }}">add</a>
+</p>
+{% endblock %}

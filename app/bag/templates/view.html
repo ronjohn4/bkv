@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Bag View</h2>
+
+<table>
+    <tr>
+        <td align="right" style="font-weight:bold">name:</td>
+        <td>{{datasingle.name}}</td>
+    </tr>
+    <tr>
+        <td align="right" style="font-weight:bold">active:</td>
+        <td>{{datasingle.is_active}}</td>
+    </tr>
+    <tr>
+        <td align="right" style="font-weight:bold">desc:</td>
+        <td>{{datasingle.desc}}</td>
+    </tr>
+</table>
+<hr>
+<a href="{{ url_for('bag.list') }}">back</a>
+ | <a href="{{ url_for('bag.edit', id=datasingle.id) }}">edit</a>
+ | <a href="{{ url_for('bag.delete', id=datasingle.id) }}">delete</a>
+ | <a href="{{ url_for('bag.auditlist', id=datasingle.id) }}">audit</a>
+{% endblock %}
