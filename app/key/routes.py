@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, current_app
 from flask_login import login_required, current_user
 from app import db
-from app.instance import bp
+from app.inst import bp
 from app.models import Key, KeyAudit, Keyval, load_user
 from app.key.forms import KeyForm
 from datetime import datetime
@@ -38,7 +38,7 @@ def add():
         db.session.flush()  # flush() so the id is populated after add
         writeaudit(var.id, str(var.to_dict()), None)
         db.session.commit()
-        return redirect('/instance/list')
+        return redirect('/inst/list')
     return render_template('add.html', form=form)
 
 

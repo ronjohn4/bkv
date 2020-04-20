@@ -39,8 +39,8 @@ def create_app(config_class=Config):
     from app.key import bp as key_bp
     app.register_blueprint(key_bp, url_prefix='/key', template_folder='/key/templates')
 
-    from app.instance import bp as instance_bp
-    app.register_blueprint(instance_bp, url_prefix='/instance', template_folder='/instance/templates')
+    from app.inst import bp as instance_bp
+    app.register_blueprint(instance_bp, url_prefix='/inst', template_folder='/inst/templates')
 
     from app.keyval import bp as keyval_bp
     app.register_blueprint(keyval_bp, url_prefix='/keyval', template_folder='/keyval/templates')

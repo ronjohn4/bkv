@@ -84,7 +84,7 @@ class Instance(db.Model):
 
 class InstanceAudit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('instance.id'))
+    parent_id = db.Column(db.Integer, db.ForeignKey('inst.id'))
     a_datetime = db.Column(db.DateTime)
     a_user_id = db.Column(db.Integer)
     a_username = db.Column(db.String(64))
@@ -132,7 +132,7 @@ class KeyAudit(db.Model):
 
 class Keyval(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    instance_id = db.Column(db.Integer, db.ForeignKey('instance.id'))
+    instance_id = db.Column(db.Integer, db.ForeignKey('inst.id'))
     key_id = db.Column(db.Integer, db.ForeignKey('key.id'))
     name = db.Column(db.String(64))
     val = db.Column(db.String(120))
