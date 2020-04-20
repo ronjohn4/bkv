@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Audit List</h2>
+{% if auditlist %}
+    <table>
+        <thead>
+            <td></td>
+            <td class="underline">Date/Time</td>
+            <td class="underline">User</td>
+            <td class="underline">Action</td>
+            <td class="underline">Before</td>
+            <td class="underline">After</td>
+        </thead>
+        {% for audit in auditlist %}
+            <tr>
+                <td><a href="{{ url_for('audit.auditview', id=audit.id) }}">view</a></td>
+                <td>{{audit.a_datetime.strftime('%Y-%m-%d %H:%M:%S')}}</td>
+                <td>{{audit.a_user}}</td>
+                <td>{{audit.action}}</td>
+                <td>{{audit.before|truncate(40)}}</td>
+                {% if audit.after %}
+                    <td>{{audit.after|truncate(40)}}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+    <hr>
+    <p>
+        {% if prev_url %}
+            <a href="{{ prev_url }}">prev</a>
+        {% else %}
+            prev
+        {% endif %}
+        |
+        {% if next_url %}
+            <a href="{{ next_url }}">next</a>
+        {% else %}
+            next
+        {% endif %}
+    </p>
+{% else %}
+    No Audit available
+{% endif %}
+<p>
+    <a href="{{ url_for('bag.view', id=parent_id) }}">back</a>
+</p>
+{% endblock %}
