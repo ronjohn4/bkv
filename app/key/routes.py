@@ -1,9 +1,9 @@
 from flask import render_template, redirect, url_for, request, current_app
 from flask_login import login_required, current_user
 from app import db
-from app.bag import bp
-from app.models import Bag, BagAudit, Instance, load_user
-from app.bag.forms import BagForm
+from app.instance import bp
+from app.models import Key, KeyAudit, Keyval, load_user
+from app.key.forms import KeyForm
 from datetime import datetime
 
 
@@ -11,6 +11,7 @@ lastpagelist = 0
 lastpageaudit = 0
 lastpageinstance = 0
 lastpagekey = 0
+lastpagekeyval = 0
 next_page = None
 
 
@@ -21,7 +22,7 @@ def list():
 
     page = request.args.get('page', lastpagelist, type=int)
     lastpagelist = page
-    datalist = Bag.query.paginate(page, current_app.config['ROWS_PER_PAGE_FULL'], False)
+    datalist = Key.query.paginate(page, current_app.config['ROWS_PER_PAGE_FULL'], False)
     next_url = url_for('.list', page=datalist.next_num) if datalist.has_next else None
     prev_url = url_for('.list', page=datalist.prev_num) if datalist.has_prev else None
     return render_template('list.html', datalist=datalist.items, next_url=next_url, prev_url=prev_url)
@@ -30,46 +31,35 @@ def list():
 @bp.route('/add/', methods=["GET", "POST"])
 @login_required
 def add():
-    form = BagForm()
+    form = KeyForm()
     if request.method == 'POST' and form.validate_on_submit():
-        var = Bag(name=request.form['name'], is_active='is_active' in request.form)
+        var = Key(name=request.form['name'], is_active='is_active' in request.form)
         db.session.add(var)
         db.session.flush()  # flush() so the id is populated after add
         writeaudit(var.id, str(var.to_dict()), None)
         db.session.commit()
-        return redirect('/bag/list')
+        return redirect('/instance/list')
     return render_template('add.html', form=form)
 
 
 @bp.route('/view/<int:id>', methods=["GET", "POST"])
 @login_required
 def view(id):
-    global lastpageinstance
-    global lastpagekey
+    global lastpagekeyval
 
-    pageinstance = request.args.get('pageinstance', lastpageinstance, type=int)
-    lastpageinstance = pageinstance
+    page = request.args.get('page', lastpagekeyval, type=int)
+    lastpagekeyval = page
 
-    pagekey = request.args.get('pagekey', lastpagekey, type=int)
-    lastpagekey = pagekey
+    data_single = Key.query.filter_by(id=id).first_or_404()
 
-    data_single = Bag.query.filter_by(id=id).first_or_404()
-
-    instancelist = Instance.query.\
-        filter_by(bag_id=data_single.id).paginate(pageinstance, current_app.config['ROWS_PER_PAGE_FILTER'], False)
-    instance_next_url = url_for('.view', id=id, page=instancelist.next_num) if instancelist.has_next else None
-    instance_prev_url = url_for('.view', id=id, page=instancelist.prev_num) if instancelist.has_prev else None
-
-    keylist = Instance.query.\
-        filter_by(bag_id=data_single.id).paginate(pageinstance, current_app.config['ROWS_PER_PAGE_FILTER'], False)
-    key_next_url = url_for('.view', id=id, page=keylist.next_num) if keylist.has_next else None
-    key_prev_url = url_for('.view', id=id, page=keylist.prev_num) if keylist.has_prev else None
+    keyvallist = Keyval.query.\
+        filter_by(bag_id=data_single.id).paginate(page, current_app.config['ROWS_PER_PAGE_FILTER'], False)
+    next_url = url_for('.view', id=id, page=keyvallist.next_num) if keyvallist.has_next else None
+    prev_url = url_for('.view', id=id, page=keyvallist.prev_num) if keyvallist.has_prev else None
 
     return render_template('view.html', datasingle=data_single,
-                            instancelist=instancelist.items,
-                            instance_next_url=instance_next_url, instance_prev_url=instance_prev_url,
-                            keylist = keylist.items,
-                            key_next_url = key_next_url, key_prev_url = key_prev_url)
+                            keyvallist = keyvallist.items,
+                            next_url = next_url, prev_url = prev_url)
 
 
 @bp.route('/edit/<int:id>', methods=["GET", "POST"])
@@ -77,9 +67,9 @@ def view(id):
 def edit(id):
     global next_page
 
-    form = BagForm()
+    form = KeyForm()
     if request.method == "POST" and form.validate_on_submit():
-        data_single = Bag.query.filter_by(id=id).first_or_404()
+        data_single = Key.query.filter_by(id=id).first_or_404()
         before = str(data_single.to_dict())
         data_single.name = request.form['name']
         data_single.desc = request.form['desc']
@@ -92,7 +82,7 @@ def edit(id):
 
     if request.method == 'GET':
         next_page = request.referrer
-        data_single = Bag.query.filter_by(id=id).first_or_404()
+        data_single = Key.query.filter_by(id=id).first_or_404()
         form.load(data_single)
     return render_template('edit.html', form=form, next=request.referrer)
 
@@ -101,10 +91,10 @@ def edit(id):
 @bp.route('/delete/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete(id):
-    BagAudit.query.filter_by(parent_id=id).delete()
-    Bag.query.filter_by(id=id).delete()
+    KeyAudit.query.filter_by(parent_id=id).delete()
+    Key.query.filter_by(id=id).delete()
     db.session.commit()
-    return redirect('/bag/list')
+    return redirect('/key/list')
 
 
 @bp.route('/auditlist/<int:id>')
@@ -115,7 +105,7 @@ def auditlist(id):
     page = request.args.get('page', lastpageaudit, type=int)
     lastpageaudit = page
 
-    audit_list = BagAudit.query.\
+    audit_list = KeyAudit.query.\
         filter_by(parent_id=id).paginate(page, current_app.config['ROWS_PER_PAGE_FULL'], False)
     next_url = url_for('.auditlist', id=id, page=audit_list.next_num) if audit_list.has_next else None
     prev_url = url_for('.auditlist', id=id, page=audit_list.prev_num) if audit_list.has_prev else None
@@ -131,7 +121,7 @@ def auditlist(id):
 def addtest():
     add_count = request.args.get('addcount', 20, type=int)
     for addone in range(add_count):
-        var = Bag(name=f'name{addone}',
+        var = Key(name=f'name{addone}',
                   desc=f'desc{addone}',
                   is_active=0
                   )
@@ -139,7 +129,7 @@ def addtest():
         db.session.flush()
         writeaudit(var.id, str(var.to_dict()), None)
     db.session.commit()
-    return redirect('/bag/list')
+    return redirect('/key/list')
 
 
 def writeaudit(parent_id, before, after):
@@ -147,7 +137,7 @@ def writeaudit(parent_id, before, after):
         change = "add"
     else:
         change = "change"
-    var = BagAudit(parent_id=parent_id,
+    var = KeyAudit(parent_id=parent_id,
                    a_datetime=datetime.now(),
                    a_user_id=current_user.id,
                    a_username=load_user(current_user.id).username,

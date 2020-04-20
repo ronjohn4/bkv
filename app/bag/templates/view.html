@@ -22,4 +22,89 @@
  | <a href="{{ url_for('bag.edit', id=datasingle.id) }}">edit</a>
  | <a href="{{ url_for('bag.delete', id=datasingle.id) }}">delete</a>
  | <a href="{{ url_for('bag.auditlist', id=datasingle.id) }}">audit</a>
+
+
+
+<hr>
+<h2>Instance List</h2>
+{% if instancelist %}
+    <table>
+        <thead>
+            <td></td>
+            <td class="underline">Name</td>
+            <td class="underline">Desc</td>
+            <td class="underline">Active</td>
+        </thead>
+        {% for instance in instancelist %}
+            <tr>
+                <td><a href="{{ url_for('instance.view', id=instance.id) }}">view</a></td>
+                <td>{{instance.name}}</td>
+                <td>{{instance.desc}}</td>
+                <td>{{instance.is_active}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <hr>
+    <p>
+        {% if prev_url %}
+            <a href="{{ instance_prev_url }}">prev</a>
+        {% else %}
+            prev
+        {% endif %}
+        |
+        {% if next_url %}
+            <a href="{{ instance_next_url }}">next</a>
+        {% else %}
+            next
+        {% endif %}
+    </p>
+{% else %}
+    No Instances for this Bag
+{% endif %}
+<p>
+    <a href="{{ url_for('instance.add') }}">add</a>
+</p>
+
+<hr>
+<h2>Key List</h2>
+{% if keylist %}
+    <table>
+        <thead>
+            <td></td>
+            <td class="underline">Name</td>
+            <td class="underline">Desc</td>
+            <td class="underline">Active</td>
+        </thead>
+        {% for key in keylist %}
+            <tr>
+                <td><a href="{{ url_for('key.view', id=key.id) }}">view</a></td>
+                <td>{{key.name}}</td>
+                <td>{{key.desc}}</td>
+                <td>{{key.is_active}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <hr>
+    <p>
+        {% if prev_url %}
+            <a href="{{ keylist_prev_url }}">prev</a>
+        {% else %}
+            prev
+        {% endif %}
+        |
+        {% if next_url %}
+            <a href="{{ keylist_next_url }}">next</a>
+        {% else %}
+            next
+        {% endif %}
+    </p>
+{% else %}
+    No Keys for this Bag
+{% endif %}
+
+<p>
+    <a href="{{ url_for('key.add') }}">add</a>
+</p>
+
+
 {% endblock %}

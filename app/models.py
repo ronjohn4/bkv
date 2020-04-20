@@ -64,6 +64,7 @@ class BagAudit(db.Model):
 
 class Instance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    bag_id = db.Column(db.Integer, db.ForeignKey('bag.id'))
     name = db.Column(db.String(64))
     desc = db.Column(db.String(128))
     is_active = db.Column(db.Boolean)
@@ -81,14 +82,61 @@ class Instance(db.Model):
         return data
 
 
+class InstanceAudit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('instance.id'))
+    a_datetime = db.Column(db.DateTime)
+    a_user_id = db.Column(db.Integer)
+    a_username = db.Column(db.String(64))
+    action = db.Column(db.String(64))
+    before = db.Column(db.String)
+    after = db.Column(db.String)
+
+    def __repr__(self):
+        return '<InstanceAudit {}>'.format(self.datetime)
+
+
+class Key(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    bag_id = db.Column(db.Integer, db.ForeignKey('bag.id'))
+    name = db.Column(db.String(64))
+    desc = db.Column(db.String(128))
+    is_active = db.Column(db.Boolean)
+
+    def __repr__(self):
+        return '<Key {}>'.format(self.name)
+
+    def to_dict(self):
+        data = {
+            "id": self.id,
+            "name": self.name,
+            "desc": self.desc,
+            "is_active": self.is_active
+        }
+        return data
+
+
+class KeyAudit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('key.id'))
+    a_datetime = db.Column(db.DateTime)
+    a_user_id = db.Column(db.Integer)
+    a_username = db.Column(db.String(64))
+    action = db.Column(db.String(64))
+    before = db.Column(db.String)
+    after = db.Column(db.String)
+
+    def __repr__(self):
+        return '<KeyAudit {}>'.format(self.datetime)
+
+
 class Keyval(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    instance_id = db.Column(db.Integer, db.ForeignKey('instance.id'))
+    key_id = db.Column(db.Integer, db.ForeignKey('key.id'))
     name = db.Column(db.String(64))
-    email = db.Column(db.String(120))
-    sex = db.Column(db.Integer)  # https://en.wikipedia.org/wiki/ISO/IEC_5218
-    dob = db.Column(db.Date)
+    val = db.Column(db.String(120))
     is_active = db.Column(db.Boolean)
-    income_amount = db.Column(db.Numeric)
 
     def __repr__(self):
         return '<Keyval {}>'.format(self.name)
@@ -97,13 +145,24 @@ class Keyval(db.Model):
         data = {
             "id": self.id,
             "name": self.name,
-            "email": self.email,
-            "sex": self.sex,
-            "dob": self.dob,
-            "is_active": self.is_active,
-            "income_amount": self.income_amount
+            "val": self.val,
+            "is_active": self.is_active
         }
         return data
+
+
+class KeyvalAudit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('keyval.id'))
+    a_datetime = db.Column(db.DateTime)
+    a_user_id = db.Column(db.Integer)
+    a_username = db.Column(db.String(64))
+    action = db.Column(db.String(64))
+    before = db.Column(db.String)
+    after = db.Column(db.String)
+
+    def __repr__(self):
+        return '<KeyvalAudit {}>'.format(self.datetime)
 
 
 class User(UserMixin, db.Model):

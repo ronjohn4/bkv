@@ -33,14 +33,17 @@ def create_app(config_class=Config):
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth', template_folder='/auth/templates')
 
-    from app.keyval import bp as keyval_bp
-    app.register_blueprint(keyval_bp, url_prefix='/keyval', template_folder='/keyval/templates')
-
     from app.bag import bp as app_bp
     app.register_blueprint(app_bp, url_prefix='/bag', template_folder='/bag/templates')
 
-    from app.env import bp as env_bp
-    app.register_blueprint(env_bp, url_prefix='/env', template_folder='/env/templates')
+    from app.key import bp as key_bp
+    app.register_blueprint(key_bp, url_prefix='/key', template_folder='/key/templates')
+
+    from app.instance import bp as instance_bp
+    app.register_blueprint(instance_bp, url_prefix='/instance', template_folder='/instance/templates')
+
+    from app.keyval import bp as keyval_bp
+    app.register_blueprint(keyval_bp, url_prefix='/keyval', template_folder='/keyval/templates')
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp, url_prefix='/', template_folder='/main/templates')
