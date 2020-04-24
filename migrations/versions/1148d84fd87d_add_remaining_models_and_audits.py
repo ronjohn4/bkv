@@ -27,7 +27,7 @@ def upgrade():
     sa.Column('action', sa.String(length=64), nullable=True),
     sa.Column('before', sa.String(), nullable=True),
     sa.Column('after', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['parent_id'], ['inst.id'], ),
+    sa.ForeignKeyConstraint(['parent_id'], ['keyval.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('key_audit',

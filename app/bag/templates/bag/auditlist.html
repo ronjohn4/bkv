@@ -18,7 +18,11 @@
                 <td>{{audit.a_datetime.strftime('%Y-%m-%d %H:%M:%S')}}</td>
                 <td>{{audit.a_user}}</td>
                 <td>{{audit.action}}</td>
-                <td>{{audit.before|truncate(40)}}</td>
+                {% if audit.before %}
+                    <td>{{audit.before|truncate(40)}}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
                 {% if audit.after %}
                     <td>{{audit.after|truncate(40)}}</td>
                 {% else %}
@@ -45,6 +49,6 @@
     No Audit available
 {% endif %}
 <p>
-    <a href="{{ url_for('bag.view', id=parent_id) }}">back</a>
+    <a href="{{ url_for('.view', id=parent_id) }}">back</a>
 </p>
 {% endblock %}

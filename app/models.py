@@ -75,6 +75,7 @@ class Instance(db.Model):
     def to_dict(self):
         data = {
             "id": self.id,
+            "bag_id": self.bag_id,
             "name": self.name,
             "desc": self.desc,
             "is_active": self.is_active
@@ -84,7 +85,7 @@ class Instance(db.Model):
 
 class InstanceAudit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('inst.id'))
+    parent_id = db.Column(db.Integer, db.ForeignKey('keyval.id'))
     a_datetime = db.Column(db.DateTime)
     a_user_id = db.Column(db.Integer)
     a_username = db.Column(db.String(64))
@@ -109,6 +110,7 @@ class Key(db.Model):
     def to_dict(self):
         data = {
             "id": self.id,
+            "bag_id": self.bag_id,
             "name": self.name,
             "desc": self.desc,
             "is_active": self.is_active
@@ -132,7 +134,7 @@ class KeyAudit(db.Model):
 
 class Keyval(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    instance_id = db.Column(db.Integer, db.ForeignKey('inst.id'))
+    instance_id = db.Column(db.Integer, db.ForeignKey('keyval.id'))
     key_id = db.Column(db.Integer, db.ForeignKey('key.id'))
     name = db.Column(db.String(64))
     val = db.Column(db.String(120))
@@ -144,11 +146,18 @@ class Keyval(db.Model):
     def to_dict(self):
         data = {
             "id": self.id,
+            "instance_id": self.instance_id,
+            "key_id": self.key_id,
             "name": self.name,
             "val": self.val,
             "is_active": self.is_active
         }
         return data
+# datetime last loaded
+# dirty flag
+# datetime last changed
+# Count of reads
+# Count of maint
 
 
 class KeyvalAudit(db.Model):

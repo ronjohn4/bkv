@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Bag View</h2>
+<h2>Keyval View</h2>
 
 <table>
     <tr>
@@ -18,10 +18,10 @@
     </tr>
 </table>
 <hr>
-<a href="{{ url_for('bag.list') }}">back</a>
- | <a href="{{ url_for('bag.edit', id=datasingle.id) }}">edit</a>
- | <a href="{{ url_for('bag.delete', id=datasingle.id) }}">delete</a>
- | <a href="{{ url_for('bag.auditlist', id=datasingle.id) }}">audit</a>
+<a href="{{ url_for('.list') }}">back</a>
+ | <a href="{{ url_for('instance.edit', id=datasingle.id) }}">edit</a>
+ | <a href="{{ url_for('instance.delete', id=datasingle.id) }}">delete</a>
+ | <a href="{{ url_for('instance.auditlist', id=datasingle.id) }}">audit</a>
 
 <hr>
 <h2>Keyval List</h2>

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Bag List</h2>
+<h2>Keyval List</h2>
 
 <table>
     <thead>
@@ -35,6 +35,6 @@
     {% endif %}
 </p>
 <p>
-    <a href="{{ url_for('bag.add') }}">add</a>
+    <a href="{{ url_for('.add') }}">add</a>
 </p>
 {% endblock %}

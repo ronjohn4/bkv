@@ -22,12 +22,12 @@
 </script>
 <h2>Bag Add</h2>
 
-<form name="AddForm" method="POST" action="{{ url_for('bag.add') }}">
+<form name="AddForm" method="POST" action="{{ url_for('.add') }}">
     {{ form.csrf_token }}{{ form.hidden_tag() }}
     <p>{{ with_errors(form.name) }}</p>
     <p>{{ with_errors(form.is_active) }}</p>
     <p>{{ with_errors(form.desc) }}</p>
 </form>
 
-<p><a href="javascript:submitAddform()">save</a> | <a href="{{ url_for('bag.list') }}">cancel</a></p>
+<p><a href="javascript:submitAddform()">save</a> | <a href="{{ url_for('.list') }}">cancel</a></p>
 {% endblock %}

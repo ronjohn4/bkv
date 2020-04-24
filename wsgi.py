@@ -1,3 +1,14 @@
+# todo - Create Test Harness
+# Load on Start
+# Web based page
+# Display all Keyvals return
+# Allow Instance to be set in UI
+# Reload button
+# Example of use of one keyval in code
+
+# Todo - Expose API for pull by app (json response(
+# todo - enforce data types in the UI
+
 from app import app
 
 

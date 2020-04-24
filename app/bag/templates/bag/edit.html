@@ -25,7 +25,7 @@ function submitEditform()
     }
 </script>
 <h2>Bag Edit</h2>
-<form name="EditForm" method="POST" action="{{ url_for('bag.edit', id=form.id.data|int) }}">
+<form name="EditForm" method="POST" action="{{ url_for('.edit', id=form.id.data|int) }}">
     {{ form.csrf_token }}{{ form.hidden_tag() }}
     <table>
         {{ with_errors(form.name) }}
@@ -34,6 +34,6 @@ function submitEditform()
     </table>
 </form>
 <hr>
-<p><a href="{{ url_for('bag.view', id=form.id.data|int) }}">cancel</a> |
+<p><a href="{{ url_for('.view', id=form.id.data|int) }}">cancel</a> |
     <a href="javascript:submitEditform()">save</a></p>
 {% endblock %}

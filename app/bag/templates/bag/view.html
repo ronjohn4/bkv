@@ -18,7 +18,7 @@
     </tr>
 </table>
 <hr>
-<a href="{{ url_for('bag.list') }}">back</a>
+<a href="{{ url_for('.list') }}">back</a>
  | <a href="{{ url_for('bag.edit', id=datasingle.id) }}">edit</a>
  | <a href="{{ url_for('bag.delete', id=datasingle.id) }}">delete</a>
  | <a href="{{ url_for('bag.auditlist', id=datasingle.id) }}">audit</a>
@@ -46,13 +46,13 @@
     </table>
     <hr>
     <p>
-        {% if prev_url %}
+        {% if instance_prev_url %}
             <a href="{{ instance_prev_url }}">prev</a>
         {% else %}
             prev
         {% endif %}
         |
-        {% if next_url %}
+        {% if instance_next_url %}
             <a href="{{ instance_next_url }}">next</a>
         {% else %}
             next
@@ -62,7 +62,7 @@
     No Instances for this Bag
 {% endif %}
 <p>
-    <a href="{{ url_for('instance.add') }}">add</a>
+    <a href="{{ url_for('instance.add', bag_id=datasingle.id) }}">add</a>
 </p>
 
 <hr>
@@ -86,14 +86,14 @@
     </table>
     <hr>
     <p>
-        {% if prev_url %}
-            <a href="{{ keylist_prev_url }}">prev</a>
+        {% if key_prev_url %}
+            <a href="{{ key_prev_url }}">prev</a>
         {% else %}
             prev
         {% endif %}
         |
-        {% if next_url %}
-            <a href="{{ keylist_next_url }}">next</a>
+        {% if key_next_url %}
+            <a href="{{ key_next_url }}">next</a>
         {% else %}
             next
         {% endif %}
@@ -103,7 +103,7 @@
 {% endif %}
 
 <p>
-    <a href="{{ url_for('key.add') }}">add</a>
+    <a href="{{ url_for('key.add', bag_id=datasingle.id) }}">add</a>
 </p>
 
 

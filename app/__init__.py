@@ -28,25 +28,25 @@ def create_app(config_class=Config):
     bootstrap.init_app(app)
 
     from app.audit import bp as audit_bp
-    app.register_blueprint(audit_bp, url_prefix='/audit', template_folder='/audit/templates')
+    app.register_blueprint(audit_bp, url_prefix='/audit', template_folder='templates')
 
     from app.auth import bp as auth_bp
-    app.register_blueprint(auth_bp, url_prefix='/auth', template_folder='/auth/templates')
+    app.register_blueprint(auth_bp, url_prefix='/auth', template_folder='templates')
 
-    from app.bag import bp as app_bp
-    app.register_blueprint(app_bp, url_prefix='/bag', template_folder='/bag/templates')
+    from app.bag import bp as bag_bp
+    app.register_blueprint(bag_bp, url_prefix='/bag', template_folder='templates')
 
     from app.key import bp as key_bp
-    app.register_blueprint(key_bp, url_prefix='/key', template_folder='/key/templates')
+    app.register_blueprint(key_bp, url_prefix='/key', template_folder='templates')
 
-    from app.inst import bp as instance_bp
-    app.register_blueprint(instance_bp, url_prefix='/inst', template_folder='/inst/templates')
+    from app.instance import bp as instance_bp
+    app.register_blueprint(instance_bp, url_prefix='/instance', template_folder='templates')
 
     from app.keyval import bp as keyval_bp
-    app.register_blueprint(keyval_bp, url_prefix='/keyval', template_folder='/keyval/templates')
+    app.register_blueprint(keyval_bp, url_prefix='/keyval', template_folder='templates')
 
     from app.main import bp as main_bp
-    app.register_blueprint(main_bp, url_prefix='/', template_folder='/main/templates')
+    app.register_blueprint(main_bp, url_prefix='/', template_folder='templates')
 
     if app.config['LOG_TO_STDOUT']:
         stream_handler = logging.StreamHandler()

@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, current_app
 from flask_login import login_required, current_user
 from app import db
-from app.inst import bp
+from app.key import bp
 from app.models import Key, KeyAudit, Keyval, load_user
 from app.key.forms import KeyForm
 from datetime import datetime
@@ -9,8 +9,8 @@ from datetime import datetime
 
 lastpagelist = 0
 lastpageaudit = 0
-lastpageinstance = 0
-lastpagekey = 0
+instance_lastpage = 0
+key_lastpage = 0
 lastpagekeyval = 0
 next_page = None
 
@@ -25,21 +25,29 @@ def list():
     datalist = Key.query.paginate(page, current_app.config['ROWS_PER_PAGE_FULL'], False)
     next_url = url_for('.list', page=datalist.next_num) if datalist.has_next else None
     prev_url = url_for('.list', page=datalist.prev_num) if datalist.has_prev else None
-    return render_template('list.html', datalist=datalist.items, next_url=next_url, prev_url=prev_url)
+    return render_template('key/list.html', datalist=datalist.items, next_url=next_url, prev_url=prev_url)
 
 
-@bp.route('/add/', methods=["GET", "POST"])
+# adding a key to a specific bag
+@bp.route('/add/<int:bag_id>', methods=["GET", "POST"])
 @login_required
-def add():
+def add(bag_id):
+    global next_page
+
     form = KeyForm()
     if request.method == 'POST' and form.validate_on_submit():
-        var = Key(name=request.form['name'], is_active='is_active' in request.form)
+        var = Key(name=request.form['name'], desc=request.form['desc'],
+                       is_active='is_active' in request.form, bag_id=request.form['bag_id'])
         db.session.add(var)
         db.session.flush()  # flush() so the id is populated after add
-        writeaudit(var.id, str(var.to_dict()), None)
+        writeaudit(var.id, None, str(var.to_dict()))
         db.session.commit()
-        return redirect('/inst/list')
-    return render_template('add.html', form=form)
+        return redirect(next_page)
+    if request.method == 'GET':
+        next_page = request.referrer
+        form.bag_id.default = bag_id
+        form.process()
+    return render_template('key/add.html', form=form, next_page=next_page)
 
 
 @bp.route('/view/<int:id>', methods=["GET", "POST"])
@@ -53,11 +61,11 @@ def view(id):
     data_single = Key.query.filter_by(id=id).first_or_404()
 
     keyvallist = Keyval.query.\
-        filter_by(bag_id=data_single.id).paginate(page, current_app.config['ROWS_PER_PAGE_FILTER'], False)
+        filter_by(key_id=data_single.id).paginate(page, current_app.config['ROWS_PER_PAGE_FILTER'], False)
     next_url = url_for('.view', id=id, page=keyvallist.next_num) if keyvallist.has_next else None
     prev_url = url_for('.view', id=id, page=keyvallist.prev_num) if keyvallist.has_prev else None
 
-    return render_template('view.html', datasingle=data_single,
+    return render_template('key/view.html', datasingle=data_single,
                             keyvallist = keyvallist.items,
                             next_url = next_url, prev_url = prev_url)
 
@@ -77,17 +85,18 @@ def edit(id):
 
         after = str(data_single.to_dict())
         writeaudit(data_single.id, before, after)
-
+        db.session.commit()
         return redirect(next_page)
 
     if request.method == 'GET':
         next_page = request.referrer
         data_single = Key.query.filter_by(id=id).first_or_404()
         form.load(data_single)
-    return render_template('edit.html', form=form, next=request.referrer)
+    return render_template('key/edit.html', form=form, next=request.referrer)
 
 
 # todo - double check delete
+# todo - cascade delete to instance, keyval and audit records
 @bp.route('/delete/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete(id):
@@ -109,7 +118,7 @@ def auditlist(id):
         filter_by(parent_id=id).paginate(page, current_app.config['ROWS_PER_PAGE_FULL'], False)
     next_url = url_for('.auditlist', id=id, page=audit_list.next_num) if audit_list.has_next else None
     prev_url = url_for('.auditlist', id=id, page=audit_list.prev_num) if audit_list.has_prev else None
-    return render_template('auditlist.html', parent_id=id, auditlist=audit_list.items, next_url=next_url,
+    return render_template('key/auditlist.html', parent_id=id, auditlist=audit_list.items, next_url=next_url,
                            prev_url=prev_url)
 
 
@@ -127,16 +136,16 @@ def addtest():
                   )
         db.session.add(var)
         db.session.flush()
-        writeaudit(var.id, str(var.to_dict()), None)
+        writeaudit(var.id, None, str(var.to_dict()))
     db.session.commit()
     return redirect('/key/list')
 
 
 def writeaudit(parent_id, before, after):
-    if after is None:
-        change = "add"
-    else:
+    if before:
         change = "change"
+    else:
+        change = "add"
     var = KeyAudit(parent_id=parent_id,
                    a_datetime=datetime.now(),
                    a_user_id=current_user.id,

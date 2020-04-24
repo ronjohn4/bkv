@@ -30,7 +30,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['parent_id'], ['bag.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('inst',
+    op.create_table('keyval',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('bag_id', sa.Integer(), nullable=True),
     sa.Column('name', sa.String(length=64), nullable=True),
@@ -46,7 +46,7 @@ def upgrade():
     sa.Column('name', sa.String(length=64), nullable=True),
     sa.Column('val', sa.String(length=120), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
-    sa.ForeignKeyConstraint(['instance_id'], ['inst.id'], ),
+    sa.ForeignKeyConstraint(['instance_id'], ['keyval.id'], ),
     sa.ForeignKeyConstraint(['key_id'], ['key.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -92,6 +92,6 @@ def downgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.drop_table('keyval')
-    op.drop_table('inst')
+    op.drop_table('keyval')
     op.drop_table('bag_audit')
     # ### end Alembic commands ###
