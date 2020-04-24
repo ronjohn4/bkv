@@ -48,20 +48,6 @@ class Bag(db.Model):
         return data
 
 
-class BagAudit(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('bag.id'))
-    a_datetime = db.Column(db.DateTime)
-    a_user_id = db.Column(db.Integer)
-    a_username = db.Column(db.String(64))
-    action = db.Column(db.String(64))
-    before = db.Column(db.String)
-    after = db.Column(db.String)
-
-    def __repr__(self):
-        return '<BagAudit {}>'.format(self.datetime)
-
-
 class Instance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     bag_id = db.Column(db.Integer, db.ForeignKey('bag.id'))
@@ -81,20 +67,6 @@ class Instance(db.Model):
             "is_active": self.is_active
         }
         return data
-
-
-class InstanceAudit(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('keyval.id'))
-    a_datetime = db.Column(db.DateTime)
-    a_user_id = db.Column(db.Integer)
-    a_username = db.Column(db.String(64))
-    action = db.Column(db.String(64))
-    before = db.Column(db.String)
-    after = db.Column(db.String)
-
-    def __repr__(self):
-        return '<InstanceAudit {}>'.format(self.datetime)
 
 
 class Key(db.Model):
@@ -118,20 +90,6 @@ class Key(db.Model):
         return data
 
 
-class KeyAudit(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('key.id'))
-    a_datetime = db.Column(db.DateTime)
-    a_user_id = db.Column(db.Integer)
-    a_username = db.Column(db.String(64))
-    action = db.Column(db.String(64))
-    before = db.Column(db.String)
-    after = db.Column(db.String)
-
-    def __repr__(self):
-        return '<KeyAudit {}>'.format(self.datetime)
-
-
 class Keyval(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     instance_id = db.Column(db.Integer, db.ForeignKey('keyval.id'))
@@ -139,6 +97,11 @@ class Keyval(db.Model):
     name = db.Column(db.String(64))
     val = db.Column(db.String(120))
     is_active = db.Column(db.Boolean)
+    last_loaded = db.Column(db.DateTime)
+    last_changed = db.Column(db.DateTime)
+    is_dirty = db.Column(db.Boolean)
+    count_loaded = db.Column(db.Integer)
+    count_changed = db.Column(db.Integer)
 
     def __repr__(self):
         return '<Keyval {}>'.format(self.name)
@@ -150,19 +113,21 @@ class Keyval(db.Model):
             "key_id": self.key_id,
             "name": self.name,
             "val": self.val,
-            "is_active": self.is_active
+            "is_active": self.is_active,
+            "last_loaded": self.last_loaded,
+            "last_changed": self.last_changed,
+            "is_dirty":  self.is_dirty,
+            "count_loaded": self.count_loaded,
+            "count_changed": self.count_changed
         }
         return data
-# datetime last loaded
-# dirty flag
-# datetime last changed
-# Count of reads
-# Count of maint
 
 
-class KeyvalAudit(db.Model):
+# parent_id is not a foreign key so can be used by multiple models
+class Audit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('keyval.id'))
+    model = db.Column(db.String(64))
+    parent_id = db.Column(db.Integer)
     a_datetime = db.Column(db.DateTime)
     a_user_id = db.Column(db.Integer)
     a_username = db.Column(db.String(64))
@@ -171,7 +136,7 @@ class KeyvalAudit(db.Model):
     after = db.Column(db.String)
 
     def __repr__(self):
-        return '<KeyvalAudit {}>'.format(self.datetime)
+        return '<Audit {}>'.format(self.datetime)
 
 
 class User(UserMixin, db.Model):

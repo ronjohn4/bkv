@@ -18,10 +18,10 @@
     </tr>
 </table>
 <hr>
-<a href="{{ url_for('.list') }}">back</a>
+<a href="{{ url_for('bag.list') }}">back</a>
  | <a href="{{ url_for('.edit', id=datasingle.id) }}">edit</a>
  | <a href="{{ url_for('.delete', id=datasingle.id) }}">delete</a>
- | <a href="{{ url_for('.auditlist', id=datasingle.id) }}">audit</a>
+ | <a href="{{ url_for('audit.list', id=datasingle.id, model='key') }}">audit</a>
 
 <hr>
 <h2>Keyval List</h2>

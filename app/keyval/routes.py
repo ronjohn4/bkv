@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, request, current_app
 from flask_login import login_required, current_user
 from app import db
 from app.keyval import bp
-from app.models import Keyval, KeyvalAudit, load_user
+from app.models import Keyval, Audit, load_user
 from app.keyval.forms import KeyvalForm
 from datetime import datetime
 
@@ -80,26 +80,10 @@ def edit(id):
 @bp.route('/delete/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete(id):
-    KeyvalAudit.query.filter_by(parent_id=id).delete()
+    Audit.query.filter_by(model='keyval', parent_id=id).delete()
     Keyval.query.filter_by(id=id).delete()
     db.session.commit()
     return redirect('/keyval/list')
-
-
-@bp.route('/auditlist/<int:id>')
-@login_required
-def auditlist(id):
-    global lastpageaudit
-
-    page = request.args.get('page', lastpageaudit, type=int)
-    lastpageaudit = page
-
-    audit_list = KeyvalAudit.query.\
-        filter_by(parent_id=id).paginate(page, current_app.config['ROWS_PER_PAGE_FULL'], False)
-    next_url = url_for('.auditlist', id=id, page=audit_list.next_num) if audit_list.has_next else None
-    prev_url = url_for('.auditlist', id=id, page=audit_list.prev_num) if audit_list.has_prev else None
-    return render_template('keyval/auditlist.html', parent_id=id, auditlist=audit_list.items, next_url=next_url,
-                           prev_url=prev_url)
 
 
 # Use to add test data to the App model.
@@ -126,13 +110,14 @@ def writeaudit(parent_id, before, after):
         change = "change"
     else:
         change = "add"
-    var = KeyvalAudit(parent_id=parent_id,
-                   a_datetime=datetime.now(),
-                   a_user_id=current_user.id,
-                   a_username=load_user(current_user.id).username,
-                   action=change,
-                   before=before,
-                   after=after
-                   )
+    var = Audit(model='keyval',
+                parent_id=parent_id,
+                a_datetime=datetime.now(),
+                a_user_id=current_user.id,
+                a_username=load_user(current_user.id).username,
+                action=change,
+                before=before,
+                after=after
+                )
 
     db.session.add(var)

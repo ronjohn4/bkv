@@ -21,7 +21,7 @@
 <a href="{{ url_for('.list') }}">back</a>
  | <a href="{{ url_for('bag.edit', id=datasingle.id) }}">edit</a>
  | <a href="{{ url_for('bag.delete', id=datasingle.id) }}">delete</a>
- | <a href="{{ url_for('bag.auditlist', id=datasingle.id) }}">audit</a>
+ | <a href="{{ url_for('audit.list', id=datasingle.id, model='bag') }}">audit</a>
 
 
 
