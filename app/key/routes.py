@@ -24,7 +24,6 @@ def list():
     return render_template('key/list.html', datalist=datalist.items, next_url=next_url, prev_url=prev_url)
 
 
-# todo - add keyval for every instance for this key
 # adding a key to a specific bag
 @bp.route('/add/<int:bag_id>', methods=["GET", "POST"])
 @login_required
