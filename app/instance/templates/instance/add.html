@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% macro with_errors(field) %}
+    <div class="form_field">
+    {% if field.errors %}
+        {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
+        {{ field.label }} {{ field(class=css_class, **kwargs) }}
+        <ul class="errors">{% for error in field.errors %}<li>{{ error|e }}</li>{% endfor %}</ul>
+    {% else %}
+        {{ field.label }} {{ field(**kwargs) }}
+    {% endif %}
+    </div>
+{% endmacro %}
+
+{% block content %}
+<script type="text/javascript">
+    function submitAddform()
+    {
+        document.AddForm.submit();
+        return false;
+    }
+</script>
+<h2>Instance Add</h2>
+
+<form name="AddForm" method="POST" action="{{ url_for('.add', bag_id=form.bag_id.data|int) }}">
+    {{ form.csrf_token }}{{ form.hidden_tag() }}
+    <p>{{ with_errors(form.name) }}</p>
+    <p>{{ with_errors(form.is_active) }}</p>
+    <p>{{ with_errors(form.desc) }}</p>
+</form>
+
+<p><a href="javascript:submitAddform()">save</a> | <a href="{{ url_for('bag.view', id=form.bag_id.data|int) }}">cancel</a></p>
+{% endblock %}
