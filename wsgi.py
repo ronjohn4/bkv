@@ -9,7 +9,6 @@
 # Todo - Expose API for pull by app (json response(
 # todo - enforce data types in the UI
 # todo - default cursor position on form load
-# todo - delete should return to previous page, not the list
 
 from app import app
 
