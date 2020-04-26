@@ -69,5 +69,4 @@ def create_app(config_class=Config):
 
 app = create_app()
 
-
 from app import models

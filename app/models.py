@@ -23,12 +23,6 @@ from time import time
 import os
 
 
-sex = {0: 'not known',
-       1: 'male',
-       2: 'female',
-       9: 'not applicable'}
-
-
 class Bag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
@@ -92,9 +86,8 @@ class Key(db.Model):
 
 class Keyval(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    instance_id = db.Column(db.Integer, db.ForeignKey('keyval.id'))
+    instance_id = db.Column(db.Integer, db.ForeignKey('instance.id'))
     key_id = db.Column(db.Integer, db.ForeignKey('key.id'))
-    name = db.Column(db.String(64))
     val = db.Column(db.String(120))
     is_active = db.Column(db.Boolean)
     last_loaded = db.Column(db.DateTime)
@@ -104,14 +97,13 @@ class Keyval(db.Model):
     count_changed = db.Column(db.Integer)
 
     def __repr__(self):
-        return '<Keyval {}>'.format(self.name)
+        return '<Keyval {}>'.format(self.id)
 
     def to_dict(self):
         data = {
             "id": self.id,
             "instance_id": self.instance_id,
             "key_id": self.key_id,
-            "name": self.name,
             "val": self.val,
             "is_active": self.is_active,
             "last_loaded": self.last_loaded,

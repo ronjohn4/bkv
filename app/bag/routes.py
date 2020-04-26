@@ -8,10 +8,8 @@ from datetime import datetime
 
 
 lastpagelist = 0
-lastpageaudit = 0
 instance_lastpage = 0
 key_lastpage = 0
-next_page = None
 
 
 @bp.route('/list/')
@@ -79,8 +77,6 @@ def view(id):
 @bp.route('/edit/<int:id>', methods=["GET", "POST"])
 @login_required
 def edit(id):
-    global next_page
-
     form = BagForm()
     if request.method == "POST" and form.validate_on_submit():
         data_single = Bag.query.filter_by(id=id).first_or_404()
@@ -92,13 +88,12 @@ def edit(id):
         after = str(data_single.to_dict())
         writeaudit(data_single.id, before, after)
         db.session.commit()
-        return redirect(next_page)
+        return redirect(url_for('.view', id=data_single.id))
 
     if request.method == 'GET':
-        next_page = request.referrer
         data_single = Bag.query.filter_by(id=id).first_or_404()
         form.load(data_single)
-    return render_template('bag/edit.html', form=form, next=request.referrer)
+    return render_template('bag/edit.html', form=form)
 
 
 # todo - double check delete
@@ -108,25 +103,6 @@ def edit(id):
 def delete(id):
     Audit.query.filter_by(model='bag', parent_id=id).delete()
     Bag.query.filter_by(id=id).delete()
-    db.session.commit()
-    return redirect('/bag/list')
-
-
-# Use to add test data to the App model.
-# /bag/addtest?addcount=30 adds 30 entries
-# may need to remove the @login_required
-@bp.route('/addtest/', methods=["GET", "POST"])
-@login_required
-def addtest():
-    add_count = request.args.get('addcount', 20, type=int)
-    for addone in range(add_count):
-        var = Bag(name=f'name{addone}',
-                  desc=f'desc{addone}',
-                  is_active=0
-                  )
-        db.session.add(var)
-        db.session.flush()
-        writeaudit(var.id, None, str(var.to_dict()))
     db.session.commit()
     return redirect('/bag/list')
 

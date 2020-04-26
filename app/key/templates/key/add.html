@@ -29,5 +29,5 @@
     <p>{{ with_errors(form.desc) }}</p>
 </form>
 
-<p><a href="javascript:submitAddform()">save</a> | <a href="{{next_page}}">cancel</a></p>
+<p><a href="javascript:submitAddform()">save</a> | <a href="{{url_for('bag.view', id=form.bag_id.data|int)}}">cancel</a></p>
 {% endblock %}

@@ -18,7 +18,7 @@
     </tr>
 </table>
 <hr>
-<a href="{{ url_for('bag.list') }}">back</a>
+<a href="{{ url_for('bag.view', id=datasingle.bag_id) }}">back</a>
  | <a href="{{ url_for('.edit', id=datasingle.id) }}">edit</a>
  | <a href="{{ url_for('.delete', id=datasingle.id) }}">delete</a>
  | <a href="{{ url_for('audit.list', id=datasingle.id, model='key') }}">audit</a>
@@ -29,16 +29,18 @@
     <table>
         <thead>
             <td></td>
-            <td class="underline">Name</td>
-            <td class="underline">Desc</td>
+            <td class="underline">Instance</td>
+            <td class="underline">Key</td>
+            <td class="underline">Value</td>
             <td class="underline">Active</td>
         </thead>
-        {% for keyval in keyvallist %}
+        {% for kv in keyvallist %}
             <tr>
-                <td><a href="{{ url_for('keyval.view', id=keyval.id) }}">view</a></td>
-                <td>{{keyval.name}}</td>
-                <td>{{keyval.desc}}</td>
-                <td>{{keyval.is_active}}</td>
+                <td><a href="{{ url_for('keyval.view', id=kv.id) }}">view</a></td>
+                <td>{{kv.name}}</td>
+                <td>{{datasingle.name}}</td>
+                <td>{{kv.val}}</td>
+                <td>{{kv.is_active}}</td>
             </tr>
         {% endfor %}
     </table>
@@ -59,9 +61,5 @@
 {% else %}
     No Keyvals for this Instance
 {% endif %}
-<p>
-    <a href="{{ url_for('keyval.add') }}">add</a>
-</p>
-
 
 {% endblock %}

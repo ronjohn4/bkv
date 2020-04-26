@@ -6,62 +6,20 @@
 <table>
     <tr>
         <td align="right" style="font-weight:bold">name:</td>
-        <td>{{datasingle.name}}</td>
+        <td>{{keysingle.name}}</td>
     </tr>
     <tr>
-        <td align="right" style="font-weight:bold">active:</td>
+        <td align="right" style="font-weight:bold">value:</td>
+        <td>{{datasingle.val}}</td>
+    </tr>
+    <tr>
+        <td align="right" style="font-weight:bold">is_active:</td>
         <td>{{datasingle.is_active}}</td>
-    </tr>
-    <tr>
-        <td align="right" style="font-weight:bold">desc:</td>
-        <td>{{datasingle.desc}}</td>
     </tr>
 </table>
 <hr>
-<a href="{{ url_for('bag.list') }}">back</a>
+<a href="{{rtn}}">back</a>
  | <a href="{{ url_for('.edit', id=datasingle.id) }}">edit</a>
- | <a href="{{ url_for('.delete', id=datasingle.id) }}">delete</a>
  | <a href="{{ url_for('audit.list', id=datasingle.id, model='keyval') }}">audit</a>
-
-<hr>
-<h2>Keyval List</h2>
-{% if keyvallist %}
-    <table>
-        <thead>
-            <td></td>
-            <td class="underline">Name</td>
-            <td class="underline">Desc</td>
-            <td class="underline">Active</td>
-        </thead>
-        {% for keyval in keyvallist %}
-            <tr>
-                <td><a href="{{ url_for('keyval.view', id=keyval.id) }}">view</a></td>
-                <td>{{keyval.name}}</td>
-                <td>{{keyval.desc}}</td>
-                <td>{{keyval.is_active}}</td>
-            </tr>
-        {% endfor %}
-    </table>
-    <hr>
-    <p>
-        {% if prev_url %}
-            <a href="{{ prev_url }}">prev</a>
-        {% else %}
-            prev
-        {% endif %}
-        |
-        {% if next_url %}
-            <a href="{{ next_url }}">next</a>
-        {% else %}
-            next
-        {% endif %}
-    </p>
-{% else %}
-    No Keyvals for this Instance
-{% endif %}
-<p>
-    <a href="{{ url_for('keyval.add') }}">add</a>
-</p>
-
 
 {% endblock %}

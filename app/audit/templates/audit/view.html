@@ -30,5 +30,5 @@
     </tr>
 </table>
 <hr>
-<a href="{{rtn}}">back</a>
+<a href="{{url_for('.list', id=audit.parent_id, model=audit.model)}}">back</a>
 {% endblock %}
