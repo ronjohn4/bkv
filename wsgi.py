@@ -6,9 +6,12 @@
 # Reload button
 # Example of use of one keyval in code
 
-# Todo - Expose API for pull by app (json response(
 # todo - enforce data types in the UI
 # todo - default cursor position on form load
+# todo - make sure all names are unique within their bag
+# todo - add logging
+
+
 
 from app import app
 

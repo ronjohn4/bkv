@@ -2,9 +2,11 @@ from flask import render_template, redirect, url_for, request, current_app
 from flask_login import login_required, current_user
 from app import db
 from app.instance import bp
-from app.models import Instance, Key, Audit, Keyval, load_user
+from app.models import Instance, Key, Audit, Keyval, Bag, load_user
 from app.instance.forms import InstanceForm
 from datetime import datetime
+import requests
+import json
 
 
 lastpagekeyval = None
@@ -28,6 +30,16 @@ def add(bag_id):
         form.bag_id.default = bag_id
         form.process()
     return render_template('instance/add.html', form=form)
+
+
+@bp.route('/apitest/<int:id>', methods=["GET", "POST"])
+@login_required
+def apitest(id):
+    instance_single = Instance.query.filter_by(id=id).first_or_404()
+    bag_single = Bag.query.filter_by(id=instance_single.bag_id).first_or_404()
+    api_url = url_for('api.bag_instance', bag=bag_single.name, instance=instance_single.name, _external=True)
+    api_response = requests.get(api_url)
+    return render_template('instance/apitest.html', id=id, api_response=api_response.text, api_url=api_url)
 
 
 @bp.route('/view/<int:id>', methods=["GET", "POST"])
