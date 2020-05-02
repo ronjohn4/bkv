@@ -10,8 +10,7 @@
 # todo - default cursor position on form load
 # todo - make sure all names are unique within their bag
 # todo - add logging
-
-
+# todo - cascade delete using database
 
 from app import app
 

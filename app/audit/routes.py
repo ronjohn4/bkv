@@ -2,6 +2,9 @@ from flask import render_template, request, url_for, current_app
 from flask_login import login_required
 from app.audit import bp
 from app.models import Audit
+import requests
+from flask import jsonify
+
 
 previous_page = 0
 rtn = None
@@ -12,7 +15,13 @@ rtn = None
 @login_required
 def view(id):
     audit_single = Audit.query.filter_by(id=id).first_or_404()
-    return render_template('audit/view.html', audit=audit_single, rtn=request.referrer)
+    print(audit_single.after)
+    tst = jsonify('{"id": "99", "name": "C4", "desc": "Bag containing C4 environment variables", "is_active": "True"}')
+    print(type(tst))
+
+    api_response = requests.get('http://127.0.0.1:5000/api/baginstance/C4/PRD')
+    # print(api_response.text)
+    return render_template('audit/view.html', audit=audit_single, rtn=request.referrer, after=jsonify(tst))
 
 
 # model query parameters defined the source table to view.  parent_id, model uniquly identifies the parent

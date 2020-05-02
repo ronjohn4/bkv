@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, request, current_app
 from flask_login import login_required, current_user
 from app import db
 from app.bag import bp
-from app.models import Bag, Audit, Instance, Key, load_user
+from app.models import Bag, Audit, Instance, Key, Keyval, load_user
 from app.bag.forms import BagForm
 from datetime import datetime
 
@@ -97,11 +97,13 @@ def edit(id):
 
 
 # todo - double check delete
-# todo - cascade delete to Instance, Key, Keyval and associated audit records
+# todo - cascade delete to Keyval
+# todo - return to calling bag list
 @bp.route('/delete/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete(id):
     Audit.query.filter_by(model='bag', parent_id=id).delete()
+    Keyval.query.filter_by(instance_id=id).delete()
     Bag.query.filter_by(id=id).delete()
     db.session.commit()
     return redirect('/bag/list')

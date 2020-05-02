@@ -2,6 +2,7 @@
 
 {% block content %}
 <h2>Audit View</h2>
+<pre>{{after}}</pre>
 
 <table>
     <tr>
@@ -23,8 +24,8 @@
                     <td style="font-weight:bold">After</td>
                 </tr>
                 <tr>
-                    <td>{{audit.before}}</td>
-                    <td>{{audit.after}}</td>
+                    <td><pre>{{audit.before}}</pre></td>
+                    <td><pre>{{after}}</pre></td>
                 </tr>
         </table>
     </tr>

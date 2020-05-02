@@ -88,11 +88,12 @@ def edit(id):
 
 
 # todo - double check delete
-# todo - cascade delete to keyval and audit records
+# todo - return to calling bag view
 @bp.route('/delete/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete(id):
     Audit.query.filter_by(model='key', parent_id=id).delete()
+    Keyval.query.filter_by(key_id=id).delete()
     Key.query.filter_by(id=id).delete()
     db.session.commit()
     return redirect('/key/list')

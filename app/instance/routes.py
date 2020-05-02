@@ -24,6 +24,8 @@ def add(bag_id):
         db.session.add(var)
         db.session.flush()  # flush() so the id is populated after add
         writeaudit(var.id, None, str(var.to_dict()))
+        writekeyvalkeys(var.id, None, True)
+
         db.session.commit()
         return redirect(url_for('bag.view', id=var.bag_id))
     if request.method == 'GET':
@@ -39,6 +41,7 @@ def apitest(id):
     bag_single = Bag.query.filter_by(id=instance_single.bag_id).first_or_404()
     api_url = url_for('api.bag_instance', bag=bag_single.name, instance=instance_single.name, _external=True)
     api_response = requests.get(api_url)
+    print(type(api_response))
     return render_template('instance/apitest.html', id=id, api_response=api_response.text, api_url=api_url)
 
 
@@ -51,7 +54,7 @@ def view(id):
     lastpagekeyval = page
 
     data_single = Instance.query.filter_by(id=id).first_or_404()
-    key_single = Key.query.filter_by(bag_id=data_single.bag_id).first_or_404()
+    key_single = Key.query.filter_by(bag_id=data_single.bag_id).first()
 
     keyvallist = db.session.query(Keyval, Key).\
         join(Key, Key.id == Keyval.key_id).filter(Keyval.instance_id == id).\
@@ -90,11 +93,12 @@ def edit(id):
 
 
 # todo - double check delete
-# todo - cascade delete to keyval and audit
+# todo - return to calling bag view
 @bp.route('/delete/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete(id):
     Audit.query.filter_by(model='instance', parent_id=id).delete()
+    Keyval.query.filter_by(instance_id=id).delete()
     Instance.query.filter_by(id=id).delete()
     db.session.commit()
     return redirect('/instance/list')
@@ -116,3 +120,15 @@ def writeaudit(parent_id, before, after):
                 )
 
     db.session.add(var)
+
+
+def writekeyvalkeys(instance_id, val, is_active):
+    instance_single = Instance.query.filter_by(id=instance_id)
+    key_list = Key.query.filter_by(bag_id=instance_single.bag_id)
+    for key in key_list:
+        var = Keyval(instance_id=instance_id,
+                     key_id=key.id,
+                     val=val,
+                     is_active=is_active
+                     )
+        db.session.add(var)

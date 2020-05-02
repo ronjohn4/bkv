@@ -24,6 +24,8 @@ import os
 
 
 class Bag(db.Model):
+    __tablename__ = 'bag'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
     desc = db.Column(db.String(128))
@@ -43,6 +45,8 @@ class Bag(db.Model):
 
 
 class Instance(db.Model):
+    __tablename__ = 'instance'
+
     id = db.Column(db.Integer, primary_key=True)
     bag_id = db.Column(db.Integer, db.ForeignKey('bag.id'))
     name = db.Column(db.String(64))
@@ -64,6 +68,8 @@ class Instance(db.Model):
 
 
 class Key(db.Model):
+    __tablename__ = 'key'
+
     id = db.Column(db.Integer, primary_key=True)
     bag_id = db.Column(db.Integer, db.ForeignKey('bag.id'))
     name = db.Column(db.String(64))
@@ -85,6 +91,8 @@ class Key(db.Model):
 
 
 class Keyval(db.Model):
+    __tablename__ = 'keyval'
+
     id = db.Column(db.Integer, primary_key=True)
     instance_id = db.Column(db.Integer, db.ForeignKey('instance.id'))
     key_id = db.Column(db.Integer, db.ForeignKey('key.id'))
@@ -117,6 +125,8 @@ class Keyval(db.Model):
 
 # parent_id is not a foreign key so can be used by multiple models
 class Audit(db.Model):
+    __tablename__ = 'audit'
+
     id = db.Column(db.Integer, primary_key=True)
     model = db.Column(db.String(64))
     parent_id = db.Column(db.Integer)
@@ -132,6 +142,8 @@ class Audit(db.Model):
 
 
 class User(UserMixin, db.Model):
+    __tablename__ = 'user'
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
