@@ -5,9 +5,9 @@ from wtforms.validators import DataRequired
 
 class BagForm(FlaskForm):
     id = HiddenField('id:')
-    name = StringField('Name:', validators=[DataRequired()])
-    desc = StringField('Desc:')
-    is_active = BooleanField('Active:')
+    name = StringField('name:', validators=[DataRequired()])
+    desc = StringField('desc:')
+    is_active = BooleanField('active:')
 
     def load(self, data):
         self.id.default = data.id

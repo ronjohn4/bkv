@@ -6,8 +6,8 @@ class KeyvalForm(FlaskForm):
     id = HiddenField('id:')
     instance_id = HiddenField('instance_id:')
     key_id = HiddenField('key_id:')
-    val = StringField('Value:')
-    is_active = BooleanField('Active:')
+    val = StringField('value:')
+    is_active = BooleanField('active:')
 
     def load(self, data):
         self.id.default = data.id

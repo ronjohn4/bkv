@@ -24,7 +24,7 @@
 
 <form name="AddForm" method="POST" action="{{ url_for('.add', bag_id=form.bag_id.data|int) }}">
     {{ form.csrf_token }}{{ form.hidden_tag() }}
-    <p>{{ with_errors(form.name) }}</p>
+    <p>{{ with_errors(form.name, autofocus="autofocus") }}</p>
     <p>{{ with_errors(form.is_active) }}</p>
     <p>{{ with_errors(form.desc) }}</p>
 </form>

@@ -11,6 +11,10 @@
 # execute the migration script
 #   flask db upgrade
 
+# Good article on cascade
+# https://dev.to/zchtodd/sqlalchemy-cascading-deletes-8hk
+# alembic doesn't handle alter on MySQL, need to delete and rebuild
+
 
 from flask import current_app, url_for
 from flask_login import UserMixin
@@ -21,6 +25,7 @@ from hashlib import md5
 import jwt
 from time import time
 import os
+from sqlalchemy.orm import sessionmaker, relationship
 
 
 class Bag(db.Model):
@@ -30,6 +35,8 @@ class Bag(db.Model):
     name = db.Column(db.String(64))
     desc = db.Column(db.String(128))
     is_active = db.Column(db.Boolean)
+    instances = relationship("Instance", cascade="all, delete", passive_deletes=True)
+    keys = relationship("Key", cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Bag {}>'.format(self.name)
@@ -48,10 +55,11 @@ class Instance(db.Model):
     __tablename__ = 'instance'
 
     id = db.Column(db.Integer, primary_key=True)
-    bag_id = db.Column(db.Integer, db.ForeignKey('bag.id'))
+    bag_id = db.Column(db.Integer, db.ForeignKey('bag.id', ondelete="cascade"))
     name = db.Column(db.String(64))
     desc = db.Column(db.String(128))
     is_active = db.Column(db.Boolean)
+    keyvals = relationship("Keyval", cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Instance {}>'.format(self.name)
@@ -71,10 +79,11 @@ class Key(db.Model):
     __tablename__ = 'key'
 
     id = db.Column(db.Integer, primary_key=True)
-    bag_id = db.Column(db.Integer, db.ForeignKey('bag.id'))
+    bag_id = db.Column(db.Integer, db.ForeignKey('bag.id', ondelete="cascade"))
     name = db.Column(db.String(64))
     desc = db.Column(db.String(128))
     is_active = db.Column(db.Boolean)
+    keyvals = relationship("Keyval", cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Key {}>'.format(self.name)
@@ -94,8 +103,8 @@ class Keyval(db.Model):
     __tablename__ = 'keyval'
 
     id = db.Column(db.Integer, primary_key=True)
-    instance_id = db.Column(db.Integer, db.ForeignKey('instance.id'))
-    key_id = db.Column(db.Integer, db.ForeignKey('key.id'))
+    instance_id = db.Column(db.Integer, db.ForeignKey('instance.id', ondelete="cascade"))
+    key_id = db.Column(db.Integer, db.ForeignKey('key.id', ondelete="cascade"))
     val = db.Column(db.String(120))
     is_active = db.Column(db.Boolean)
     last_loaded = db.Column(db.DateTime)

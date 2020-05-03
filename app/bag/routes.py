@@ -96,14 +96,9 @@ def edit(id):
     return render_template('bag/edit.html', form=form)
 
 
-# todo - double check delete
-# todo - cascade delete to Keyval
-# todo - return to calling bag list
 @bp.route('/delete/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete(id):
-    Audit.query.filter_by(model='bag', parent_id=id).delete()
-    Keyval.query.filter_by(instance_id=id).delete()
     Bag.query.filter_by(id=id).delete()
     db.session.commit()
     return redirect('/bag/list')

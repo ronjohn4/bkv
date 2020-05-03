@@ -7,10 +7,10 @@
 # Example of use of one keyval in code
 
 # todo - enforce data types in the UI
-# todo - default cursor position on form load
 # todo - make sure all names are unique within their bag
 # todo - add logging
-# todo - cascade delete using database
+# todo - cascade delete to audit table
+# todo - filter bags on current_user
 
 from app import app
 

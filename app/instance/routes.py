@@ -6,7 +6,6 @@ from app.models import Instance, Key, Audit, Keyval, Bag, load_user
 from app.instance.forms import InstanceForm
 from datetime import datetime
 import requests
-import json
 
 
 lastpagekeyval = None
@@ -92,13 +91,10 @@ def edit(id):
     return render_template('instance/edit.html', form=form)
 
 
-# todo - double check delete
 # todo - return to calling bag view
 @bp.route('/delete/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete(id):
-    Audit.query.filter_by(model='instance', parent_id=id).delete()
-    Keyval.query.filter_by(instance_id=id).delete()
     Instance.query.filter_by(id=id).delete()
     db.session.commit()
     return redirect('/instance/list')
@@ -123,7 +119,7 @@ def writeaudit(parent_id, before, after):
 
 
 def writekeyvalkeys(instance_id, val, is_active):
-    instance_single = Instance.query.filter_by(id=instance_id)
+    instance_single = Instance.query.filter_by(id=instance_id).first_or_404()
     key_list = Key.query.filter_by(bag_id=instance_single.bag_id)
     for key in key_list:
         var = Keyval(instance_id=instance_id,

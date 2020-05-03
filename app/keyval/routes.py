@@ -25,7 +25,6 @@ def view(id):
     return render_template('keyval/view.html', datasingle=data_single, keysingle=key_single, rtn=rtn)
 
 
-# todo - show the keyval name on edit (which comes from the parent key)
 @bp.route('/edit/<int:id>', methods=["GET", "POST"])
 @login_required
 def edit(id):
@@ -43,8 +42,9 @@ def edit(id):
 
     if request.method == 'GET':
         data_single = Keyval.query.filter_by(id=id).first_or_404()
+        key_single = Key.query.filter_by(id=data_single.key_id).first_or_404()
         form.load(data_single)
-    return render_template('keyval/edit.html', form=form)
+    return render_template('keyval/edit.html', form=form, keysingle=key_single)
 
 
 def writeaudit(parent_id, before, after):

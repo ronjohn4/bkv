@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script>
+function confirmDelete()
+    {
+        if ( confirm("Delete this Bag and all associated Instances and Keys?") == false ) {
+            return false;
+        } else {
+            window.location.href = "{{ url_for('.delete', id=datasingle.id) }}";
+            return true;
+        }
+    }
+</script>
 <h2>Bag View</h2>
 
 <table>
@@ -9,18 +20,18 @@
         <td>{{datasingle.name}}</td>
     </tr>
     <tr>
-        <td align="right" style="font-weight:bold">active:</td>
-        <td>{{datasingle.is_active}}</td>
-    </tr>
-    <tr>
         <td align="right" style="font-weight:bold">desc:</td>
         <td>{{datasingle.desc}}</td>
+    </tr>
+    <tr>
+        <td align="right" style="font-weight:bold">active:</td>
+        <td>{{datasingle.is_active}}</td>
     </tr>
 </table>
 <hr>
 <a href="{{ url_for('.list') }}">back</a>
  | <a href="{{ url_for('bag.edit', id=datasingle.id) }}">edit</a>
- | <a href="{{ url_for('bag.delete', id=datasingle.id) }}">delete</a>
+ | <a href="#" onclick="return confirmDelete();">delete</a>
  | <a href="{{ url_for('audit.list', id=datasingle.id, model='bag') }}">audit</a>
 
 

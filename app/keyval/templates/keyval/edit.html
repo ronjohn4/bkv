@@ -28,7 +28,11 @@ function submitEditform()
 <form name="EditForm" method="POST" action="{{ url_for('.edit', id=form.id.data|int) }}">
     {{ form.csrf_token }}{{ form.hidden_tag() }}
     <table>
-        {{ with_errors(form.val) }}
+        <tr>
+            <td align="right" style="font-weight:bold">name:</td>
+            <td>{{keysingle.name}}</td>
+        </tr>
+        {{ with_errors(form.val, autofocus="autofocus") }}
         {{ with_errors(form.is_active) }}
     </table>
 </form>

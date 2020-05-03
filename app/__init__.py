@@ -8,6 +8,9 @@ from logging.handlers import RotatingFileHandler
 import os
 from config import Config
 
+from sqlalchemy.engine import Engine
+from sqlalchemy import event
+
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -17,10 +20,18 @@ login.login_message = 'Please log in to access this page.'
 bootstrap = Bootstrap()
 
 
+# https://docs.sqlalchemy.org/en/13/dialects/sqlite.html#foreign-key-support
+# set the PRAGMA to allow for cascading deletes with MySQL
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
+
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-    # bag.url_map.strict_slashes = False
 
     db.init_app(app)
     migrate.init_app(app, db)
