@@ -33,17 +33,6 @@ def add(bag_id):
     return render_template('instance/add.html', form=form)
 
 
-@bp.route('/apitest/<int:id>', methods=["GET", "POST"])
-@login_required
-def apitest(id):
-    instance_single = Instance.query.filter_by(id=id).first_or_404()
-    bag_single = Bag.query.filter_by(id=instance_single.bag_id).first_or_404()
-    api_url = url_for('api.bag_instance', bag=bag_single.name, instance=instance_single.name, _external=True)
-    api_response = requests.get(api_url)
-    print(type(api_response))
-    return render_template('instance/apitest.html', id=id, api_response=api_response.text, api_url=api_url)
-
-
 @bp.route('/view/<int:id>', methods=["GET", "POST"])
 @login_required
 def view(id):
@@ -52,8 +41,10 @@ def view(id):
     page = request.args.get('page', lastpagekeyval, type=int)
     lastpagekeyval = page
 
-    data_single = Instance.query.filter_by(id=id).first_or_404()
-    key_single = Key.query.filter_by(bag_id=data_single.bag_id).first()
+    instance_single = Instance.query.filter_by(id=id).first_or_404()
+    key_single = Key.query.filter_by(bag_id=instance_single.bag_id).first()
+    bag_single = Bag.query.filter_by(id=instance_single.bag_id).first_or_404()
+    api_url = url_for('api.bag_instance', bag=bag_single.name, instance=instance_single.name, _external=True)
 
     keyvallist = db.session.query(Keyval, Key).\
         join(Key, Key.id == Keyval.key_id).filter(Keyval.instance_id == id).\
@@ -65,8 +56,8 @@ def view(id):
 
     if request.method == 'GET':
         rtn = request.referrer
-    return render_template('instance/view.html', datasingle=data_single, keysingle=key_single,
-                            keyvallist=keyvallist.items, next_url=next_url, prev_url=prev_url)
+    return render_template('instance/view.html', datasingle=instance_single, keysingle=key_single,
+                            keyvallist=keyvallist.items, next_url=next_url, prev_url=prev_url, api_url=api_url)
 
 
 @bp.route('/edit/<int:id>', methods=["GET", "POST"])

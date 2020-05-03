@@ -33,7 +33,7 @@ function confirmDelete()
  | <a href="{{ url_for('.edit', id=datasingle.id) }}">edit</a>
  | <a href="#" onclick="return confirmDelete();">delete</a>
  | <a href="{{ url_for('audit.list', id=datasingle.id, model='instance') }}">audit</a>
- | <a href="{{ url_for('.apitest', id=datasingle.id) }}">api test</a>
+ | <a href="{{ api_url }}" target="_blank">api test</a>
 
 <hr>
 <h2>Keyval List</h2>
