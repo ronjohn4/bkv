@@ -5,13 +5,11 @@ from app.instance import bp
 from app.models import Instance, Key, Audit, Keyval, Bag, load_user
 from app.instance.forms import InstanceForm
 from datetime import datetime
-import requests
 
 
 lastpagekeyval = None
 
 
-# todo - add keyval for every key in this bag and this new instance
 # adding an instance to a specific bag
 @bp.route('/add/<int:bag_id>', methods=["GET", "POST"])
 @login_required
@@ -82,13 +80,13 @@ def edit(id):
     return render_template('instance/edit.html', form=form)
 
 
-# todo - return to calling bag view
 @bp.route('/delete/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete(id):
+    instance_single = Instance.query.filter_by(id=id).first_or_404()
     Instance.query.filter_by(id=id).delete()
     db.session.commit()
-    return redirect('/instance/list')
+    return redirect(url_for('bag.view', id=instance_single.bag_id))
 
 
 def writeaudit(parent_id, before, after):

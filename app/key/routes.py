@@ -87,13 +87,13 @@ def edit(id):
     return render_template('key/edit.html', form=form)
 
 
-# todo - return to calling bag view
 @bp.route('/delete/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete(id):
+    key_single = Key.query.filter_by(id=id).first_or_404()
     Key.query.filter_by(id=id).delete()
     db.session.commit()
-    return redirect('/key/list')
+    return redirect(url_for('bag.view', id=key_single.bag_id))
 
 
 def writeaudit(parent_id, before, after):
