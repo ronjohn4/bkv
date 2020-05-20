@@ -107,6 +107,7 @@ def writeaudit(parent_id, before, after):
     db.session.add(var)
 
 
+# todo - add audits for each keyval added
 def writekeyvalkeys(instance_id, val, is_active):
     instance_single = Instance.query.filter_by(id=instance_id).first_or_404()
     key_list = Key.query.filter_by(bag_id=instance_single.bag_id)
@@ -116,4 +117,8 @@ def writekeyvalkeys(instance_id, val, is_active):
                      val=val,
                      is_active=is_active
                      )
+
+        db.session.add(var)
+        db.session.flush()  # flush() so the id is populated after add
+        writeaudit(var.id, None, str(var.to_dict()))
         db.session.add(var)

@@ -10,6 +10,7 @@ from datetime import datetime
 rtn = None
 
 
+# todo - don't return to audit either
 @bp.route('/view/<int:id>', methods=["GET", "POST"])
 @login_required
 def view(id):
